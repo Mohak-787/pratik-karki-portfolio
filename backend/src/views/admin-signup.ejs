@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Signup</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 680px; margin: 2rem auto; padding: 0 1rem; }
+    form { display: grid; gap: 0.8rem; }
+    input, button { padding: 0.6rem; font-size: 1rem; }
+    .errors { color: #b91c1c; background: #fef2f2; padding: 0.8rem; border: 1px solid #fecaca; }
+    .success { color: #166534; background: #f0fdf4; padding: 0.8rem; border: 1px solid #bbf7d0; }
+    .links { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Admin Signup</h1>
+
+  <% if (success) { %>
+    <div class="success"><%= success %></div>
+  <% } %>
+
+  <% if (errors && errors.length) { %>
+    <div class="errors">
+      <ul>
+        <% errors.forEach((error) => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form method="POST" action="/admin/signup">
+    <input type="text" name="firstName" placeholder="First name" value="<%= formData?.firstName || '' %>" required />
+    <input type="text" name="lastName" placeholder="Last name" value="<%= formData?.lastName || '' %>" />
+    <input type="email" name="email" placeholder="Email" value="<%= formData?.email || '' %>" required />
+    <input type="password" name="password" placeholder="Password (min 6 chars)" required />
+    <button type="submit">Create Admin</button>
+  </form>
+
+  <div class="links">
+    <a href="/admin/login">Go to Login</a> |
+    <a href="/contact">Contact Form</a>
+  </div>
+</body>
+</html>

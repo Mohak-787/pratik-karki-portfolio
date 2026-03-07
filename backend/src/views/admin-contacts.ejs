@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Contacts</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 0.6rem; text-align: left; vertical-align: top; }
+    th { background: #f7f7f7; }
+    .muted { color: #666; }
+    button { padding: 0.5rem 0.8rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div>
+      <h1>Contacts</h1>
+      <p class="muted">
+        Logged in as:
+        <strong><%= admin?.email || "Admin" %></strong>
+      </p>
+    </div>
+    <form method="POST" action="/admin/logout">
+      <button type="submit">Logout</button>
+    </form>
+  </div>
+
+  <% if (!contacts || contacts.length === 0) { %>
+    <p>No contacts found yet.</p>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Message</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% contacts.forEach((item) => { %>
+          <tr>
+            <td><%= item.name || "-" %></td>
+            <td><%= item.email || "-" %></td>
+            <td><%= item.phone || "-" %></td>
+            <td><%= item.message || "-" %></td>
+            <td><%= item.createdAt ? new Date(item.createdAt).toLocaleString() : "-" %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</body>
+</html>

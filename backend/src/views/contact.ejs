@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 680px; margin: 2rem auto; padding: 0 1rem; }
+    form { display: grid; gap: 0.8rem; }
+    input, textarea, button { padding: 0.6rem; font-size: 1rem; }
+    textarea { min-height: 120px; resize: vertical; }
+    .errors { color: #b91c1c; background: #fef2f2; padding: 0.8rem; border: 1px solid #fecaca; }
+    .success { color: #166534; background: #f0fdf4; padding: 0.8rem; border: 1px solid #bbf7d0; }
+  </style>
+</head>
+<body>
+  <h1>Contact Form</h1>
+
+  <% if (success) { %>
+    <div class="success"><%= success %></div>
+  <% } %>
+
+  <% if (errors && errors.length) { %>
+    <div class="errors">
+      <ul>
+        <% errors.forEach((error) => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form method="POST" action="/contact">
+    <input type="text" name="name" placeholder="Name" value="<%= formData?.name || '' %>" required />
+    <input type="email" name="email" placeholder="Email" value="<%= formData?.email || '' %>" required />
+    <input type="text" name="phone" placeholder="Phone (optional)" value="<%= formData?.phone || '' %>" />
+    <textarea name="message" placeholder="Your message" required><%= formData?.message || '' %></textarea>
+    <button type="submit">Send Message</button>
+  </form>
+
+  <p>
+    <a href="/admin/signup">Admin Signup</a> |
+    <a href="/admin/login">Admin Login</a>
+  </p>
+</body>
+</html>
