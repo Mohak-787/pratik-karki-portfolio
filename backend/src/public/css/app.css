@@ -449,6 +449,51 @@ td {
   max-width: 760px;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(3, 8, 20, 0.62);
+  backdrop-filter: blur(6px);
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 460px);
+  z-index: 9999;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--line) 86%, transparent);
+  background:
+    linear-gradient(130deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 45%),
+    color-mix(in srgb, var(--surface) 95%, transparent);
+  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.45);
+  padding: 20px 20px 16px;
+}
+
+.modal-title {
+  margin: 0;
+  font-family: "Space Grotesk", "Sora", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.modal-text {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.modal-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 @media (max-width: 640px) {
   .page {
     margin: 20px auto;
@@ -466,6 +511,10 @@ td {
 
   .title-xl {
     font-size: 1.45rem;
+  }
+
+  .modal-actions .btn {
+    flex: 1 1 100%;
   }
 
   .actions {

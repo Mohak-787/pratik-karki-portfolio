@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/app.css" />
   <script defer src="/js/theme.js"></script>
+  <script defer src="/js/logout-confirm.js"></script>
 </head>
 <body>
   <main class="page">
@@ -24,7 +25,7 @@
           <a class="btn btn-secondary" href="/admin">Dashboard</a>
           <a class="btn btn-secondary" href="/admin/videos">Videos</a>
           <a class="btn btn-primary" href="/admin/video">Upload</a>
-          <form method="POST" action="/admin/logout">
+          <form method="POST" action="/admin/logout" data-logout-confirm>
             <button type="submit" class="btn btn-ghost">Logout</button>
           </form>
         </div>
