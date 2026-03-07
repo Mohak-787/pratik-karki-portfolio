@@ -44,12 +44,14 @@ export const contact = async (req, res) => {
       message
     });
 
-    await sendEmail(
+    sendEmail(
       process.env.CONTACT_RECEIVER_EMAIL,
       emailTemplate.subject,
       emailTemplate.text,
       emailTemplate.html
-    );
+    ).catch((emailError) => {
+      console.error("Failed to send contact notification email:", emailError);
+    });
 
     if (isFormRequest(req)) {
       return res.status(201).render("contact", {

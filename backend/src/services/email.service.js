@@ -3,6 +3,12 @@ import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
+  pool: true,
+  maxConnections: 5,
+  maxMessages: 100,
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
   auth: {
     type: 'OAuth2',
     user: process.env.EMAIL_USER,
@@ -23,6 +29,10 @@ transporter.verify((error, success) => {
 
 // Function to send email
 export const sendEmail = async (to, subject, text, html) => {
+  if (!to) {
+    throw new Error("Missing email receiver");
+  }
+
   const info = await transporter.sendMail({
     from: `"New Contact Alert" <${process.env.EMAIL_USER}>`,
     to,
