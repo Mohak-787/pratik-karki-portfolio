@@ -3,7 +3,13 @@ import {
   adminSignup,
   adminLogin,
   adminLogout,
-  contacts
+  contacts,
+  videos,
+  primaryVideos,
+  secondaryVideos,
+  adminHome,
+  adminVideosView,
+  adminVideoUploadView
 } from "../controllers/admin.controller.js";
 import { body } from "express-validator";
 import {
@@ -55,10 +61,32 @@ router.route("/login").post(
 /* Apply admin auth middleware to the routes below */
 router.use(authAdmin);
 
+/* GET /admin */
+router.route("/").get(adminHome);
+
+/* GET /admin/home */
+router.route("/home").get(adminHome);
+
 /* POST /admin/logout */
 router.route("/logout").post(adminLogout);
 
 /* GET /admin/contacts */
 router.route("/contacts").get(contacts);
+
+/* GET /admin/videos */
+router.route("/videos").get(adminVideosView);
+
+/* GET + POST /admin/video */
+router.route("/video").get(adminVideoUploadView).post([
+  body("title").trim().notEmpty().withMessage("Video title is required"),
+  body("link").trim().isURL().withMessage("Valid video URL is required"),
+  body("type").isIn(["PRIMARY", "SECONDARY"]).withMessage("Video type is required")
+], videos);
+
+/* GET /admin/primary-videos */
+router.route("/primary-videos").get(primaryVideos);
+
+/* GET /admin/secondary-videos */
+router.route("/secondary-videos").get(secondaryVideos);
 
 export default router;

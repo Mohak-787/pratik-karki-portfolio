@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Video</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css" />
+  <script defer src="/js/theme.js"></script>
+</head>
+<body>
+  <main class="page">
+    <section class="panel">
+      <div class="header">
+        <div>
+          <p class="hero-kicker">Upload Desk</p>
+          <h1 class="title-xl">Add A New Video Asset</h1>
+          <p class="subtitle">Ensure metadata quality before publishing to the client-facing side.</p>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-ghost btn-toggle" data-theme-toggle>Dark Mode</button>
+          <a class="btn btn-secondary" href="/admin">Dashboard</a>
+          <a class="btn btn-secondary" href="/admin/videos">Video Library</a>
+        </div>
+      </div>
+
+      <% if (success) { %>
+        <div class="alert alert-success"><strong><%= success %></strong></div>
+      <% } %>
+
+      <% if (errors && errors.length) { %>
+        <div class="alert alert-error">
+          <strong>Fix the following issues:</strong>
+          <ul>
+            <% errors.forEach((error) => { %>
+              <li><%= error.msg %></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } %>
+
+      <form class="form" method="POST" action="/admin/video">
+        <div class="row">
+          <label>
+            Video title
+            <input type="text" name="title" placeholder="Product teaser cut v2" value="<%= formData?.title || '' %>" required />
+          </label>
+          <label>
+            Category
+            <select name="type" required>
+              <option value="PRIMARY" <%= formData?.type === 'PRIMARY' ? 'selected' : '' %>>Primary</option>
+              <option value="SECONDARY" <%= formData?.type !== 'PRIMARY' ? 'selected' : '' %>>Secondary</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          Video URL
+          <input type="url" name="link" placeholder="https://..." value="<%= formData?.link || '' %>" required />
+        </label>
+
+        <label>
+          Client / Project (Optional)
+          <input type="text" name="client" placeholder="Acme Studio - Summer Campaign" value="<%= formData?.client || '' %>" />
+        </label>
+
+        <div class="stack">
+          <button type="submit" class="btn btn-primary">Publish Video</button>
+          <a class="btn btn-ghost" href="/admin/videos">Cancel</a>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

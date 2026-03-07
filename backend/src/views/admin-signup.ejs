@@ -1,46 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Signup</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 680px; margin: 2rem auto; padding: 0 1rem; }
-    form { display: grid; gap: 0.8rem; }
-    input, button { padding: 0.6rem; font-size: 1rem; }
-    .errors { color: #b91c1c; background: #fef2f2; padding: 0.8rem; border: 1px solid #fecaca; }
-    .success { color: #166534; background: #f0fdf4; padding: 0.8rem; border: 1px solid #bbf7d0; }
-    .links { margin-top: 1rem; }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css" />
+  <script defer src="/js/theme.js"></script>
 </head>
 <body>
-  <h1>Admin Signup</h1>
+  <main class="page auth-shell">
+    <section class="panel">
+      <div class="header">
+        <div>
+          <p class="hero-kicker">Access Setup</p>
+          <h1 class="title-xl">Create Admin Account</h1>
+          <p class="subtitle">Register an administrator for editorial operations and delivery management.</p>
+        </div>
+        <button type="button" class="btn btn-ghost btn-toggle" data-theme-toggle>Dark Mode</button>
+      </div>
 
-  <% if (success) { %>
-    <div class="success"><%= success %></div>
-  <% } %>
+      <% if (success) { %>
+        <div class="alert alert-success"><strong><%= success %></strong></div>
+      <% } %>
 
-  <% if (errors && errors.length) { %>
-    <div class="errors">
-      <ul>
-        <% errors.forEach((error) => { %>
-          <li><%= error.msg %></li>
-        <% }) %>
-      </ul>
-    </div>
-  <% } %>
+      <% if (errors && errors.length) { %>
+        <div class="alert alert-error">
+          <strong>Signup failed</strong>
+          <ul>
+            <% errors.forEach((error) => { %>
+              <li><%= error.msg %></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } %>
 
-  <form method="POST" action="/admin/signup">
-    <input type="text" name="firstName" placeholder="First name" value="<%= formData?.firstName || '' %>" required />
-    <input type="text" name="lastName" placeholder="Last name" value="<%= formData?.lastName || '' %>" />
-    <input type="email" name="email" placeholder="Email" value="<%= formData?.email || '' %>" required />
-    <input type="password" name="password" placeholder="Password (min 6 chars)" required />
-    <button type="submit">Create Admin</button>
-  </form>
+      <form class="form" method="POST" action="/admin/signup">
+        <div class="row">
+          <label>
+            First name
+            <input type="text" name="firstName" placeholder="First name" value="<%= formData?.firstName || '' %>" required />
+          </label>
 
-  <div class="links">
-    <a href="/admin/login">Go to Login</a> |
-    <a href="/contact">Contact Form</a>
-  </div>
+          <label>
+            Last name
+            <input type="text" name="lastName" placeholder="Last name" value="<%= formData?.lastName || '' %>" />
+          </label>
+        </div>
+
+        <label>
+          Work Email
+          <input type="email" name="email" placeholder="admin@studio.com" value="<%= formData?.email || '' %>" required />
+        </label>
+
+        <label>
+          Password
+          <input type="password" name="password" placeholder="Minimum 6 characters" required />
+        </label>
+
+        <div class="stack">
+          <button type="submit" class="btn btn-primary">Create Admin</button>
+          <a class="btn btn-secondary" href="/admin/login">Go to Login</a>
+          <a class="btn btn-ghost" href="/contact">Contact Form</a>
+        </div>
+      </form>
+    </section>
+  </main>
 </body>
 </html>

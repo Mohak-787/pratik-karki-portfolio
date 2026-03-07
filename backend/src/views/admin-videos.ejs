@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Videos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css" />
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/admin-videos.js"></script>
+</head>
+<body>
+  <main class="page">
+    <section class="panel">
+      <div class="header">
+        <div>
+          <p class="hero-kicker">Library Console</p>
+          <h1 class="title-xl">Video Catalog</h1>
+          <p class="subtitle">Manage published assets by category and open links quickly during production review.</p>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-ghost btn-toggle" data-theme-toggle>Dark Mode</button>
+          <a class="btn btn-secondary" href="/admin">Dashboard</a>
+          <a class="btn btn-primary" href="/admin/video">Upload</a>
+        </div>
+      </div>
+
+      <section class="hero">
+        <p class="hero-kicker">Filters</p>
+        <div class="filter-bar">
+          <div class="filter-group" role="tablist" aria-label="Video type filter">
+            <button type="button" class="btn filter-btn active" data-filter="all">All Videos</button>
+            <button type="button" class="btn filter-btn" data-filter="PRIMARY">Primary Only</button>
+            <button type="button" class="btn filter-btn" data-filter="SECONDARY">Secondary Only</button>
+          </div>
+          <p class="metric" id="video-count">0 videos</p>
+        </div>
+      </section>
+
+      <% if (typeof errors !== 'undefined' && errors && errors.length) { %>
+        <div class="alert alert-error">
+          <strong>Unable to load videos</strong>
+          <ul>
+            <% errors.forEach((error) => { %>
+              <li><%= error.msg %></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } %>
+
+      <div id="video-grid" class="grid grid-3"></div>
+      <div id="video-empty" class="empty" style="display: none;">No videos available for this filter.</div>
+
+      <script id="initial-videos" type="application/json"><%- JSON.stringify(videos || []).replace(/</g, "\\u003c") %></script>
+    </section>
+  </main>
+</body>
+</html>

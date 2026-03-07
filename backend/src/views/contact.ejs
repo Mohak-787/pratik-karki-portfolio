@@ -1,46 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 680px; margin: 2rem auto; padding: 0 1rem; }
-    form { display: grid; gap: 0.8rem; }
-    input, textarea, button { padding: 0.6rem; font-size: 1rem; }
-    textarea { min-height: 120px; resize: vertical; }
-    .errors { color: #b91c1c; background: #fef2f2; padding: 0.8rem; border: 1px solid #fecaca; }
-    .success { color: #166534; background: #f0fdf4; padding: 0.8rem; border: 1px solid #bbf7d0; }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css" />
+  <script defer src="/js/theme.js"></script>
 </head>
 <body>
-  <h1>Contact Form</h1>
+  <main class="page auth-shell">
+    <section class="panel">
+      <div class="header">
+        <div>
+          <p class="hero-kicker">Public Inquiry</p>
+          <h1 class="title-xl">Contact Production Team</h1>
+          <p class="subtitle">Send your project request or feedback. Admin can review this instantly in dashboard.</p>
+        </div>
+        <button type="button" class="btn btn-ghost btn-toggle" data-theme-toggle>Dark Mode</button>
+      </div>
 
-  <% if (success) { %>
-    <div class="success"><%= success %></div>
-  <% } %>
+      <% if (success) { %>
+        <div class="alert alert-success"><strong><%= success %></strong></div>
+      <% } %>
 
-  <% if (errors && errors.length) { %>
-    <div class="errors">
-      <ul>
-        <% errors.forEach((error) => { %>
-          <li><%= error.msg %></li>
-        <% }) %>
-      </ul>
-    </div>
-  <% } %>
+      <% if (errors && errors.length) { %>
+        <div class="alert alert-error">
+          <strong>Unable to submit</strong>
+          <ul>
+            <% errors.forEach((error) => { %>
+              <li><%= error.msg %></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } %>
 
-  <form method="POST" action="/contact">
-    <input type="text" name="name" placeholder="Name" value="<%= formData?.name || '' %>" required />
-    <input type="email" name="email" placeholder="Email" value="<%= formData?.email || '' %>" required />
-    <input type="text" name="phone" placeholder="Phone (optional)" value="<%= formData?.phone || '' %>" />
-    <textarea name="message" placeholder="Your message" required><%= formData?.message || '' %></textarea>
-    <button type="submit">Send Message</button>
-  </form>
+      <form class="form" method="POST" action="/contact">
+        <div class="row">
+          <label>
+            Name
+            <input type="text" name="name" placeholder="Your full name" value="<%= formData?.name || '' %>" required />
+          </label>
 
-  <p>
-    <a href="/admin/signup">Admin Signup</a> |
-    <a href="/admin/login">Admin Login</a>
-  </p>
+          <label>
+            Email
+            <input type="email" name="email" placeholder="you@company.com" value="<%= formData?.email || '' %>" required />
+          </label>
+        </div>
+
+        <label>
+          Phone (optional)
+          <input type="text" name="phone" placeholder="Phone number" value="<%= formData?.phone || '' %>" />
+        </label>
+
+        <label>
+          Message
+          <textarea name="message" placeholder="Tell us what you need" required><%= formData?.message || '' %></textarea>
+        </label>
+
+        <div class="stack">
+          <button type="submit" class="btn btn-primary">Send Message</button>
+          <a class="btn btn-secondary" href="/admin/login">Admin Login</a>
+          <a class="btn btn-ghost" href="/admin/signup">Admin Signup</a>
+        </div>
+      </form>
+    </section>
+  </main>
 </body>
 </html>

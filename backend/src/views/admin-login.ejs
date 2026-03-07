@@ -1,45 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Login</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 680px; margin: 2rem auto; padding: 0 1rem; }
-    form { display: grid; gap: 0.8rem; margin-bottom: 1rem; }
-    input, button { padding: 0.6rem; font-size: 1rem; }
-    .errors { color: #b91c1c; background: #fef2f2; padding: 0.8rem; border: 1px solid #fecaca; }
-    .success { color: #166534; background: #f0fdf4; padding: 0.8rem; border: 1px solid #bbf7d0; }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css" />
+  <script defer src="/js/theme.js"></script>
 </head>
 <body>
-  <h1>Admin Login</h1>
+  <main class="page auth-shell">
+    <section class="panel">
+      <div class="header">
+        <div>
+          <p class="hero-kicker">Access Portal</p>
+          <h1 class="title-xl">Admin Login</h1>
+          <p class="subtitle">Sign in to access contacts, video management, and upload workflows.</p>
+        </div>
+        <button type="button" class="btn btn-ghost btn-toggle" data-theme-toggle>Dark Mode</button>
+      </div>
 
-  <% if (success) { %>
-    <div class="success"><%= success %></div>
-  <% } %>
+      <% if (success) { %>
+        <div class="alert alert-success"><strong><%= success %></strong></div>
+      <% } %>
 
-  <% if (errors && errors.length) { %>
-    <div class="errors">
-      <ul>
-        <% errors.forEach((error) => { %>
-          <li><%= error.msg %></li>
-        <% }) %>
-      </ul>
-    </div>
-  <% } %>
+      <% if (errors && errors.length) { %>
+        <div class="alert alert-error">
+          <strong>Login failed</strong>
+          <ul>
+            <% errors.forEach((error) => { %>
+              <li><%= error.msg %></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } %>
 
-  <form method="POST" action="/admin/login">
-    <input type="email" name="email" placeholder="Email" value="<%= formData?.email || '' %>" required />
-    <input type="password" name="password" placeholder="Password" required />
-    <button type="submit">Login</button>
-  </form>
+      <form class="form" method="POST" action="/admin/login">
+        <label>
+          Work Email
+          <input type="email" name="email" placeholder="admin@studio.com" value="<%= formData?.email || '' %>" required />
+        </label>
 
-  <form method="POST" action="/admin/logout">
-    <button type="submit">Logout</button>
-  </form>
+        <label>
+          Password
+          <input type="password" name="password" placeholder="Enter secure password" required />
+        </label>
 
-  <a href="/admin/signup">Create Admin</a> |
-  <a href="/contact">Contact Form</a>
+        <div class="stack">
+          <button type="submit" class="btn btn-primary">Login</button>
+          <a class="btn btn-secondary" href="/admin/signup">Create Admin</a>
+          <a class="btn btn-ghost" href="/contact">Contact Form</a>
+        </div>
+      </form>
+    </section>
+  </main>
 </body>
 </html>

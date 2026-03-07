@@ -3,10 +3,15 @@ import { validationResult } from "express-validator";
 import { createAdmin } from "../services/admin.service.js";
 import BlacklistToken from "../models/blacklistToken.js";
 import Contact from "../models/contact.model.js";
+import { createVideo } from "../services/video.service.js";
+import Video from "../models/video.model.js";
 
 const isFormRequest = (req) =>
   req.is("application/x-www-form-urlencoded") || req.is("multipart/form-data");
-const isHtmlRequest = (req) => req.accepts("html") && !req.xhr;
+const isHtmlRequest = (req) => {
+  const acceptHeader = (req.get("accept") || "").toLowerCase();
+  return acceptHeader.includes("text/html") && !acceptHeader.includes("application/json") && !req.xhr;
+};
 
 const mapAdminSignupFormData = (req) => ({
   firstName: req.body?.name?.firstName || req.body?.firstName || "",
@@ -14,9 +19,51 @@ const mapAdminSignupFormData = (req) => ({
   email: req.body?.email || ""
 });
 
+const mapVideoFormData = (req) => ({
+  title: req.body?.title || "",
+  link: req.body?.link || "",
+  type: req.body?.type || "SECONDARY",
+  client: req.body?.client || ""
+});
+
+export const adminHome = async (req, res) => {
+  return res.status(200).render("admin-home", {
+    admin: req.admin || null
+  });
+};
+
+export const adminVideosView = async (req, res) => {
+  try {
+    const videos = await Video.find({}).sort({ createdAt: -1 }).lean();
+
+    return res.status(200).render("admin-videos", {
+      admin: req.admin || null,
+      videos
+    });
+  }
+  catch (error) {
+    console.error("Error in adminVideosView controller: ", error);
+
+    return res.status(500).render("admin-videos", {
+      admin: req.admin || null,
+      videos: [],
+      errors: [{ msg: "Unable to load videos right now." }]
+    });
+  }
+};
+
+export const adminVideoUploadView = async (req, res) => {
+  return res.status(200).render("admin-video-upload", {
+    admin: req.admin || null,
+    errors: [],
+    success: null,
+    formData: {}
+  });
+};
+
 /**
  * - Admin signup controller
- * - POST /admin/signup 
+ * - POST /admin/signup
  */
 export const adminSignup = async (req, res) => {
   const errors = validationResult(req);
@@ -67,7 +114,7 @@ export const adminSignup = async (req, res) => {
     res.cookie("token", token);
 
     if (isFormRequest(req)) {
-      return res.redirect("/admin/contacts");
+      return res.redirect("/admin");
     }
 
     return res.status(201).json({
@@ -168,7 +215,7 @@ export const adminLogin = async (req, res) => {
     res.cookie("token", token);
 
     if (isFormRequest(req)) {
-      return res.redirect("/admin/contacts");
+      return res.redirect("/admin");
     }
 
     return res.status(200).json({
@@ -253,6 +300,128 @@ export const contacts = async (req, res) => {
   }
   catch (error) {
     console.error("Error in contacts controller: ", error);
+    res.status(500).json({
+      message: `Internal server error: ${error.message}`,
+      success: false
+    });
+  }
+}
+
+/**
+ * - Admin video controller
+ * - POST /admin/video
+ */
+export const videos = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    if (isFormRequest(req)) {
+      return res.status(400).render("admin-video-upload", {
+        admin: req.admin || null,
+        errors: errors.array(),
+        success: null,
+        formData: mapVideoFormData(req)
+      });
+    }
+
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { title, link, type, client } = req.body;
+
+  try {
+    const video = await createVideo({
+      title, link, type, client
+    });
+
+    if (isFormRequest(req)) {
+      return res.status(201).render("admin-video-upload", {
+        admin: req.admin || null,
+        errors: [],
+        success: "Video uploaded successfully",
+        formData: {}
+      });
+    }
+
+    res.status(201).json({
+      message: "Video uploaded successfully",
+      video,
+      success: true
+    })
+  }
+  catch (error) {
+    console.error("Error in videos(admin) controller: ", error);
+
+    if (isFormRequest(req)) {
+      return res.status(500).render("admin-video-upload", {
+        admin: req.admin || null,
+        errors: [{ msg: error.message || "Internal server error" }],
+        success: null,
+        formData: mapVideoFormData(req)
+      });
+    }
+
+    res.status(500).json({
+      message: `Internal server error: ${error.message}`,
+      success: false
+    });
+  }
+}
+
+/**
+ * - Admin primary videos controller
+ * - GET /admin/primary-videos
+ */
+export const primaryVideos = async (req, res) => {
+  try {
+    const videos = await Video.find({ type: "PRIMARY" });
+
+    if (videos.length === 0) {
+      return res.status(200).json({
+        message: "No primary videos",
+        videos: [],
+        success: true
+      });
+    }
+
+    res.status(200).json({
+      message: "Primary videos fetched successfully",
+      videos,
+      success: true
+    });
+  }
+  catch (error) {
+    console.error("Error in primaryVideos(admin) controller: ", error);
+    res.status(500).json({
+      message: `Internal server error: ${error.message}`,
+      success: false
+    });
+  }
+}
+
+/**
+ * - Admin secondary videos controller
+ * - GET /admin/secondary-videos
+ */
+export const secondaryVideos = async (req, res) => {
+  try {
+    const videos = await Video.find({ type: "SECONDARY" });
+
+    if (videos.length === 0) {
+      return res.status(200).json({
+        message: "No secondary videos",
+        videos: [],
+        success: true
+      });
+    }
+
+    res.status(200).json({
+      message: "Secondary videos fetched successfully",
+      videos,
+      success: true
+    });
+  }
+  catch (error) {
+    console.error("Error in secondaryVideos(admin) controller: ", error);
     res.status(500).json({
       message: `Internal server error: ${error.message}`,
       success: false

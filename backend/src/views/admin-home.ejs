@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css" />
+  <script defer src="/js/theme.js"></script>
+</head>
+<body>
+  <main class="page">
+    <section class="panel">
+      <div class="header">
+        <div>
+          <p class="hero-kicker">Admin Studio</p>
+          <h1 class="title-xl">Video Operations Dashboard</h1>
+          <p class="subtitle">Signed in as <strong><%= admin?.email || "Admin" %></strong>. Manage client communication, catalogs, and uploads from one control room.</p>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-ghost btn-toggle" data-theme-toggle>Dark Mode</button>
+          <form method="POST" action="/admin/logout">
+            <button type="submit" class="btn btn-secondary">Logout</button>
+          </form>
+        </div>
+      </div>
+
+      <section class="hero">
+        <p class="hero-kicker">Creative Workflow</p>
+        <h2 class="brand">Built for video editing teams</h2>
+        <p class="subtitle">Fast switching between inquiry management and media operations, optimized for daily production workflows.</p>
+      </section>
+
+      <div class="grid grid-3">
+        <article class="card">
+          <h3>Contacts Queue</h3>
+          <p>Review client requests, feedback, and project leads from your contact pipeline.</p>
+          <div class="card-action"><a class="btn btn-primary" href="/admin/contacts">Open Contacts</a></div>
+        </article>
+
+        <article class="card">
+          <h3>Video Library</h3>
+          <p>Inspect all uploaded clips and filter by category to keep delivery clean.</p>
+          <div class="card-action"><a class="btn btn-primary" href="/admin/videos">Open Videos</a></div>
+        </article>
+
+        <article class="card">
+          <h3>Upload Desk</h3>
+          <p>Publish new primary and secondary videos with complete metadata in seconds.</p>
+          <div class="card-action"><a class="btn btn-primary" href="/admin/video">Upload New Video</a></div>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

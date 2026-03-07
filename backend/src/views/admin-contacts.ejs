@@ -1,58 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Contacts</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border: 1px solid #ddd; padding: 0.6rem; text-align: left; vertical-align: top; }
-    th { background: #f7f7f7; }
-    .muted { color: #666; }
-    button { padding: 0.5rem 0.8rem; cursor: pointer; }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css" />
+  <script defer src="/js/theme.js"></script>
 </head>
 <body>
-  <div class="topbar">
-    <div>
-      <h1>Contacts</h1>
-      <p class="muted">
-        Logged in as:
-        <strong><%= admin?.email || "Admin" %></strong>
-      </p>
-    </div>
-    <form method="POST" action="/admin/logout">
-      <button type="submit">Logout</button>
-    </form>
-  </div>
+  <main class="page">
+    <section class="panel">
+      <div class="header">
+        <div>
+          <p class="hero-kicker">Client Inbox</p>
+          <h1 class="title-xl">Contact Submissions</h1>
+          <p class="subtitle">Logged in as <strong><%= admin?.email || "Admin" %></strong>. Keep responses fast and organized.</p>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-ghost btn-toggle" data-theme-toggle>Dark Mode</button>
+          <a class="btn btn-secondary" href="/admin">Dashboard</a>
+          <a class="btn btn-secondary" href="/admin/videos">Videos</a>
+          <a class="btn btn-primary" href="/admin/video">Upload</a>
+          <form method="POST" action="/admin/logout">
+            <button type="submit" class="btn btn-ghost">Logout</button>
+          </form>
+        </div>
+      </div>
 
-  <% if (!contacts || contacts.length === 0) { %>
-    <p>No contacts found yet.</p>
-  <% } else { %>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Message</th>
-          <th>Created</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% contacts.forEach((item) => { %>
-          <tr>
-            <td><%= item.name || "-" %></td>
-            <td><%= item.email || "-" %></td>
-            <td><%= item.phone || "-" %></td>
-            <td><%= item.message || "-" %></td>
-            <td><%= item.createdAt ? new Date(item.createdAt).toLocaleString() : "-" %></td>
-          </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  <% } %>
+      <% if (!contacts || contacts.length === 0) { %>
+        <div class="empty">No contact entries found yet.</div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Message</th>
+                <th>Received</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% contacts.forEach((item) => { %>
+                <tr>
+                  <td><%= item.name || '-' %></td>
+                  <td><%= item.email || '-' %></td>
+                  <td><%= item.phone || '-' %></td>
+                  <td><%= item.message || '-' %></td>
+                  <td><%= item.createdAt ? new Date(item.createdAt).toLocaleString() : '-' %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </section>
+  </main>
 </body>
 </html>
