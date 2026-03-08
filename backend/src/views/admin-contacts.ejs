@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/app.css" />
-  <script defer src="/js/theme.js"></script>
   <script defer src="/js/logout-confirm.js"></script>
+  <script defer src="/js/admin-contacts.js"></script>
 </head>
 <body>
   <main class="page">
@@ -21,7 +21,6 @@
           <p class="subtitle">Logged in as <strong><%= admin?.email || "Admin" %></strong>. Keep responses fast and organized.</p>
         </div>
         <div class="actions">
-          <button type="button" class="btn btn-ghost btn-toggle" data-theme-toggle>Dark Mode</button>
           <a class="btn btn-secondary" href="/admin">Dashboard</a>
           <a class="btn btn-secondary" href="/admin/videos">Videos</a>
           <a class="btn btn-primary" href="/admin/video">Upload</a>
@@ -32,12 +31,19 @@
       </div>
 
       <% if (!contacts || contacts.length === 0) { %>
-        <div class="empty">No contact entries found yet.</div>
+        <div class="empty" id="contacts-empty">No contact entries found yet.</div>
       <% } else { %>
+        <div class="filter-bar" style="margin-bottom: 10px;">
+          <p class="metric" id="contact-selection-count">0 selected</p>
+          <button type="button" class="btn btn-secondary" id="bulk-delete-btn" disabled>Delete Selected</button>
+        </div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
+                <th class="table-check-col">
+                  <input type="checkbox" id="select-all-contacts" aria-label="Select all contacts" />
+                </th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
@@ -45,19 +51,43 @@
                 <th>Received</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="contacts-table-body">
               <% contacts.forEach((item) => { %>
-                <tr>
+                <tr data-contact-row data-contact-id="<%= item._id %>">
+                  <td>
+                    <input
+                      type="checkbox"
+                      data-contact-checkbox
+                      value="<%= item._id %>"
+                      aria-label="Select contact from <%= item.name || 'unknown sender' %>"
+                    />
+                  </td>
                   <td><%= item.name || '-' %></td>
                   <td><%= item.email || '-' %></td>
                   <td><%= item.phone || '-' %></td>
                   <td><%= item.message || '-' %></td>
-                  <td><%= item.createdAt ? new Date(item.createdAt).toLocaleString() : '-' %></td>
+                  <td>
+                    <div class="contact-received-cell">
+                      <span><%= item.createdAt ? new Date(item.createdAt).toLocaleString() : '-' %></span>
+                    <button
+                      type="button"
+                      class="icon-btn contact-row-action"
+                      data-delete-contact="<%= item._id %>"
+                      aria-label="Delete contact from <%= item.name || 'unknown sender' %>"
+                      title="Delete"
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M9 3.75A1.75 1.75 0 0 1 10.75 2h2.5A1.75 1.75 0 0 1 15 3.75V4h4a.75.75 0 0 1 0 1.5h-1.03l-.72 12.24A2.25 2.25 0 0 1 15 19.9H9a2.25 2.25 0 0 1-2.25-2.16L6.03 5.5H5a.75.75 0 0 1 0-1.5h4v-.25zm4.5.25v-.25a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25V4h3zm-5.72 1.5.71 12.15c.02.4.35.72.76.72h6c.4 0 .74-.32.76-.72l.71-12.15H7.53zm2.72 2.25a.75.75 0 0 1 .75.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 .75-.75zm3.5 0a.75.75 0 0 1 .75.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 .75-.75z"/>
+                      </svg>
+                    </button>
+                    </div>
+                  </td>
                 </tr>
               <% }) %>
             </tbody>
           </table>
         </div>
+        <div class="empty" id="contacts-empty" style="display: none; margin-top: 14px;">No contact entries found yet.</div>
       <% } %>
     </section>
   </main>

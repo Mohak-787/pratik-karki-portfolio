@@ -4,14 +4,18 @@ import {
   adminLogin,
   adminLogout,
   contacts,
+  deleteContact,
+  deleteContactsBulk,
   videos,
+  updateVideo,
+  deleteVideo,
   primaryVideos,
   secondaryVideos,
   adminHome,
   adminVideosView,
   adminVideoUploadView
 } from "../controllers/admin.controller.js";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import {
   normalizeAdminSignupForm,
   normalizeAdminLoginForm
@@ -71,7 +75,15 @@ router.route("/home").get(adminHome);
 router.route("/logout").post(adminLogout);
 
 /* GET /admin/contacts */
-router.route("/contacts").get(contacts);
+router.route("/contacts").get(contacts).delete([
+  body("ids").isArray({ min: 1 }).withMessage("At least one contact id is required"),
+  body("ids.*").isMongoId().withMessage("Invalid contact id")
+], deleteContactsBulk);
+
+/* DELETE /admin/contact/:id */
+router.route("/contact/:id").delete([
+  param("id").isMongoId().withMessage("Valid contact id is required")
+], deleteContact);
 
 /* GET /admin/videos */
 router.route("/videos").get(adminVideosView);
@@ -82,6 +94,16 @@ router.route("/video").get(adminVideoUploadView).post([
   body("link").trim().isURL().withMessage("Valid video URL is required"),
   body("type").isIn(["PRIMARY", "SECONDARY"]).withMessage("Video type is required")
 ], videos);
+
+/* PUT + DELETE /admin/video/:id */
+router.route("/video/:id").put([
+  param("id").isMongoId().withMessage("Valid video id is required"),
+  body("title").trim().notEmpty().withMessage("Video title is required"),
+  body("link").trim().isURL().withMessage("Valid video URL is required"),
+  body("type").isIn(["PRIMARY", "SECONDARY"]).withMessage("Video type is required")
+], updateVideo).delete([
+  param("id").isMongoId().withMessage("Valid video id is required")
+], deleteVideo);
 
 /* GET /admin/primary-videos */
 router.route("/primary-videos").get(primaryVideos);

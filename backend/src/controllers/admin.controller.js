@@ -25,6 +25,12 @@ const mapVideoFormData = (req) => ({
   type: req.body?.type || "SECONDARY",
   client: req.body?.client || ""
 });
+const mapVideoPayload = (req) => ({
+  title: (req.body?.title || "").trim(),
+  link: (req.body?.link || "").trim(),
+  type: req.body?.type === "PRIMARY" ? "PRIMARY" : "SECONDARY",
+  client: (req.body?.client || "").trim()
+});
 
 export const adminHome = async (req, res) => {
   return res.status(200).render("admin-home", {
@@ -308,6 +314,72 @@ export const contacts = async (req, res) => {
 }
 
 /**
+ * - Admin delete single contact controller
+ * - DELETE /admin/contact/:id
+ */
+export const deleteContact = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { id } = req.params;
+
+  try {
+    const contact = await Contact.findByIdAndDelete(id).lean();
+    if (!contact) {
+      return res.status(404).json({
+        message: "Contact not found",
+        success: false
+      });
+    }
+
+    return res.status(200).json({
+      message: "Contact deleted successfully",
+      contact,
+      success: true
+    });
+  }
+  catch (error) {
+    console.error("Error in deleteContact(admin) controller: ", error);
+    return res.status(500).json({
+      message: `Internal server error: ${error.message}`,
+      success: false
+    });
+  }
+};
+
+/**
+ * - Admin delete multiple contacts controller
+ * - DELETE /admin/contacts
+ */
+export const deleteContactsBulk = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const ids = Array.isArray(req.body?.ids) ? req.body.ids : [];
+
+  try {
+    const result = await Contact.deleteMany({ _id: { $in: ids } });
+
+    return res.status(200).json({
+      message: `${result.deletedCount || 0} contact(s) deleted successfully`,
+      deletedCount: result.deletedCount || 0,
+      success: true
+    });
+  }
+  catch (error) {
+    console.error("Error in deleteContactsBulk(admin) controller: ", error);
+    return res.status(500).json({
+      message: `Internal server error: ${error.message}`,
+      success: false
+    });
+  }
+};
+
+/**
  * - Admin video controller
  * - POST /admin/video
  */
@@ -366,6 +438,84 @@ export const videos = async (req, res) => {
     });
   }
 }
+
+/**
+ * - Admin update video controller
+ * - PUT /admin/video/:id
+ */
+export const updateVideo = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { id } = req.params;
+  const payload = mapVideoPayload(req);
+
+  try {
+    const video = await Video.findByIdAndUpdate(id, payload, {
+      new: true,
+      runValidators: true
+    }).lean();
+
+    if (!video) {
+      return res.status(404).json({
+        message: "Video not found",
+        success: false
+      });
+    }
+
+    return res.status(200).json({
+      message: "Video updated successfully",
+      video,
+      success: true
+    });
+  }
+  catch (error) {
+    console.error("Error in updateVideo(admin) controller: ", error);
+    return res.status(500).json({
+      message: `Internal server error: ${error.message}`,
+      success: false
+    });
+  }
+};
+
+/**
+ * - Admin delete video controller
+ * - DELETE /admin/video/:id
+ */
+export const deleteVideo = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { id } = req.params;
+
+  try {
+    const video = await Video.findByIdAndDelete(id).lean();
+
+    if (!video) {
+      return res.status(404).json({
+        message: "Video not found",
+        success: false
+      });
+    }
+
+    return res.status(200).json({
+      message: "Video deleted successfully",
+      video,
+      success: true
+    });
+  }
+  catch (error) {
+    console.error("Error in deleteVideo(admin) controller: ", error);
+    return res.status(500).json({
+      message: `Internal server error: ${error.message}`,
+      success: false
+    });
+  }
+};
 
 /**
  * - Admin primary videos controller

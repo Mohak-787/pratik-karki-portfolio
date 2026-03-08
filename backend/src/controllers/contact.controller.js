@@ -2,7 +2,6 @@ import { validationResult } from "express-validator";
 import { createContact } from "../services/contact.service.js";
 import { sendEmail } from "../services/email.service.js";
 import { buildContactEmailTemplate } from "../templates/email.template.js";
-import Admin from "../models/admin.model.js"
 
 const isFormRequest = (req) =>
   req.is("application/x-www-form-urlencoded") || req.is("multipart/form-data");
@@ -41,7 +40,8 @@ export const contact = async (req, res) => {
       name,
       email,
       phone,
-      message
+      message,
+      submittedAt: new Date()
     });
 
     sendEmail(

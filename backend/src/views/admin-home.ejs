@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/app.css" />
-  <script defer src="/js/theme.js"></script>
   <script defer src="/js/logout-confirm.js"></script>
 </head>
 <body>
@@ -21,7 +20,6 @@
           <p class="subtitle">Signed in as <strong><%= admin?.email || "Admin" %></strong>. Manage client communication, catalogs, and uploads from one control room.</p>
         </div>
         <div class="actions">
-          <button type="button" class="btn btn-ghost btn-toggle" data-theme-toggle>Dark Mode</button>
           <form method="POST" action="/admin/logout" data-logout-confirm>
             <button type="submit" class="btn btn-secondary">Logout</button>
           </form>
