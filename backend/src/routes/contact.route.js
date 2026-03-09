@@ -6,7 +6,10 @@ const router = express.Router();
 
 /* GET /contact */
 router.route("/").get((req, res) => {
-  res.render("contact", { errors: [], success: null, formData: {} });
+  res.status(404).json({
+    message: "Contact form UI is not available in admin panel. Use frontend app.",
+    success: false
+  });
 });
 
 /* POST /contact */

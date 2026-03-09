@@ -4,19 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Login</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/app.css" />
+  <script defer src="/js/auth-wave-background.js"></script>
 </head>
-<body>
+<body class="auth-page">
+  <div class="auth-bg" aria-hidden="true">
+    <canvas class="auth-wave-canvas"></canvas>
+  </div>
   <main class="page auth-shell">
-    <section class="panel">
+    <section class="panel auth-panel">
       <div class="header">
         <div>
           <p class="hero-kicker">Access Portal</p>
-          <h1 class="title-xl">Admin Login</h1>
-          <p class="subtitle">Sign in to access contacts, video management, and upload workflows.</p>
+          <h1 class="title-xl auth-title">Login</h1>
+          <p class="subtitle auth-subtitle">Sign in to access admin operations.</p>
         </div>
       </div>
 
@@ -38,19 +39,27 @@
       <form class="form" method="POST" action="/admin/login">
         <label>
           Work Email
-          <input type="email" name="email" placeholder="admin@studio.com" value="<%= formData?.email || '' %>" required />
+          <input type="email" name="email" placeholder="admin@studio.com" value="<%= formData?.email || '' %>" required autocomplete="email" />
         </label>
 
         <label>
           Password
-          <input type="password" name="password" placeholder="Enter secure password" required />
+          <input type="password" name="password" placeholder="Enter your password" required autocomplete="current-password" />
         </label>
 
-        <div class="stack">
-          <button type="submit" class="btn btn-primary">Login</button>
-          <a class="btn btn-secondary" href="/admin/signup">Create Admin</a>
-          <a class="btn btn-ghost" href="/contact">Contact Form</a>
+        <div class="auth-meta">
+          <label class="auth-check">
+            <input type="checkbox" name="rememberMe" />
+            <span>Remember me</span>
+          </label>
+          <a href="/admin/signup" class="auth-meta-link">Need an account?</a>
         </div>
+
+        <div class="stack auth-actions">
+          <button type="submit" class="btn btn-primary auth-submit">Login</button>
+        </div>
+
+        <p class="auth-switch">Don&apos;t have an account? <a href="/admin/signup">Create Admin</a></p>
       </form>
     </section>
   </main>

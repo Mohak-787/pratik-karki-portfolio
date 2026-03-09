@@ -4,19 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Signup</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/app.css" />
+  <script defer src="/js/auth-wave-background.js"></script>
 </head>
-<body>
+<body class="auth-page">
+  <div class="auth-bg" aria-hidden="true">
+    <canvas class="auth-wave-canvas"></canvas>
+  </div>
   <main class="page auth-shell">
-    <section class="panel">
+    <section class="panel auth-panel">
       <div class="header">
         <div>
           <p class="hero-kicker">Access Setup</p>
-          <h1 class="title-xl">Create Admin Account</h1>
-          <p class="subtitle">Register an administrator for editorial operations and delivery management.</p>
+          <h1 class="title-xl auth-title">Create Account</h1>
+          <p class="subtitle auth-subtitle">Set up a new admin profile.</p>
         </div>
       </div>
 
@@ -50,19 +51,19 @@
 
         <label>
           Work Email
-          <input type="email" name="email" placeholder="admin@studio.com" value="<%= formData?.email || '' %>" required />
+          <input type="email" name="email" placeholder="admin@studio.com" value="<%= formData?.email || '' %>" required autocomplete="email" />
         </label>
 
         <label>
           Password
-          <input type="password" name="password" placeholder="Minimum 6 characters" required />
+          <input type="password" name="password" placeholder="Minimum 6 characters" required autocomplete="new-password" />
         </label>
 
-        <div class="stack">
-          <button type="submit" class="btn btn-primary">Create Admin</button>
-          <a class="btn btn-secondary" href="/admin/login">Go to Login</a>
-          <a class="btn btn-ghost" href="/contact">Contact Form</a>
+        <div class="stack auth-actions">
+          <button type="submit" class="btn btn-primary auth-submit">Create Admin</button>
         </div>
+
+        <p class="auth-switch">Already have an account? <a href="/admin/login">Login</a></p>
       </form>
     </section>
   </main>
