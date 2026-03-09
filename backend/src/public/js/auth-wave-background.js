@@ -87,10 +87,11 @@
           }
 
           const wave = (fastSin(a) + fastCos(d)) * 0.5;
-          const intensity = 0.3 + 0.4 * wave;
-          const baseVal = 0.1 + 0.15 * fastCos(u_x + u_y + time * 0.3);
-          const blueAccent = 0.2 * fastSin(a * 1.5 + time * 0.2);
-          const purpleAccent = 0.15 * fastCos(d * 2 + time * 0.1);
+          // Keep the wave visible while avoiding over-saturation.
+          const intensity = 0.48 + 0.44 * wave;
+          const baseVal = 0.19 + 0.22 * fastCos(u_x + u_y + time * 0.3);
+          const blueAccent = 0.24 * fastSin(a * 1.5 + time * 0.2);
+          const purpleAccent = 0.2 * fastCos(d * 2 + time * 0.1);
 
           const r = Math.max(0, Math.min(1, baseVal + purpleAccent * 0.8)) * intensity;
           const g = Math.max(0, Math.min(1, baseVal + blueAccent * 0.6)) * intensity;
