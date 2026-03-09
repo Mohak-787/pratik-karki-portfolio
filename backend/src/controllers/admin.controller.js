@@ -33,9 +33,22 @@ const mapVideoPayload = (req) => ({
 });
 
 export const adminHome = async (req, res) => {
-  return res.status(200).render("admin-home", {
-    admin: req.admin || null
-  });
+  try {
+    const videos = await Video.find({}).sort({ createdAt: -1 }).lean();
+
+    return res.status(200).render("admin-home", {
+      admin: req.admin || null,
+      videos
+    });
+  }
+  catch (error) {
+    console.error("Error in adminHome controller: ", error);
+    return res.status(500).render("admin-home", {
+      admin: req.admin || null,
+      videos: [],
+      errors: [{ msg: "Unable to load videos right now." }]
+    });
+  }
 };
 
 export const adminVideosView = async (req, res) => {

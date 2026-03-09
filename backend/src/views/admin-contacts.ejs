@@ -4,29 +4,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Contacts</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/app.css" />
+  <script defer src="/js/auth-wave-background.js"></script>
   <script defer src="/js/logout-confirm.js"></script>
   <script defer src="/js/admin-contacts.js"></script>
 </head>
-<body>
-  <main class="page">
-    <section class="panel">
+<body class="admin-home-page">
+  <div class="auth-bg" aria-hidden="true">
+    <canvas class="auth-wave-canvas"></canvas>
+  </div>
+
+  <header class="admin-home-nav-wrap">
+    <nav class="admin-home-nav">
+      <div class="admin-home-brand">
+        <p class="hero-kicker">Admin Studio</p>
+        <h1>Dashboard</h1>
+      </div>
+
+      <div class="admin-home-nav-links">
+        <a class="btn btn-ghost" href="/admin/home">Home</a>
+        <a class="btn btn-ghost" href="/admin/videos">Videos</a>
+        <a class="btn btn-ghost" href="/admin/video">Upload</a>
+        <a class="btn btn-ghost" href="/admin/contacts">Contacts</a>
+      </div>
+
+      <div class="admin-home-nav-user">
+        <p class="metric">Signed in as <strong><%= admin?.name?.firstName || "Admin" %></strong></p>
+        <form method="POST" action="/admin/logout" data-logout-confirm>
+          <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page admin-home-main">
+    <section class="panel admin-home-panel">
       <div class="header">
         <div>
           <p class="hero-kicker">Client Inbox</p>
           <h1 class="title-xl">Contact Submissions</h1>
-          <p class="subtitle">Logged in as <strong><%= admin?.email || "Admin" %></strong>. Keep responses fast and organized.</p>
-        </div>
-        <div class="actions">
-          <a class="btn btn-secondary" href="/admin">Dashboard</a>
-          <a class="btn btn-secondary" href="/admin/videos">Videos</a>
-          <a class="btn btn-primary" href="/admin/video">Upload</a>
-          <form method="POST" action="/admin/logout" data-logout-confirm>
-            <button type="submit" class="btn btn-ghost">Logout</button>
-          </form>
+          <p class="subtitle">Keep responses fast and organized.</p>
         </div>
       </div>
 

@@ -10,7 +10,7 @@
   }
 
   let allVideos = [];
-  let activeFilter = "all";
+  let activeFilter = "PRIMARY";
   let modalOnClose = null;
   let modalSubmitAction = null;
   let modalDefaultFocusSelector = null;
@@ -200,10 +200,6 @@
             ></iframe>
           </div>`
         : "";
-      const linkBlock = embedUrl
-        ? `<p><a href="${escapeHtml(video.link || "#")}" target="_blank" rel="noopener noreferrer">Open on YouTube</a></p>`
-        : `<p style="margin-top: 8px;"><a href="${escapeHtml(video.link || "#")}" target="_blank" rel="noopener noreferrer">Open video link</a></p>`;
-
       return `
         <article class="card">
           <h3>${escapeHtml(video.title || "Untitled")}</h3>
@@ -212,8 +208,7 @@
           <p>Client: ${escapeHtml(video.client || "-")}</p>
           <p class="subtitle" style="margin-top: 12px;">Created: ${escapeHtml(formatDate(video.createdAt))}</p>
           <div class="card-action">
-            ${linkBlock}
-            <div class="stack" style="margin-top: 10px;">
+            <div class="stack">
               <button type="button" class="btn btn-secondary" data-action="edit" data-id="${escapeHtml(video._id)}">Edit</button>
               <button type="button" class="btn btn-ghost" data-action="delete" data-id="${escapeHtml(video._id)}">Delete</button>
             </div>
@@ -231,10 +226,6 @@
   };
 
   const fetchByType = async (filter) => {
-    if (filter === "all") {
-      return cache.all || [];
-    }
-
     if (cache[filter]) {
       return cache[filter];
     }
@@ -503,5 +494,14 @@
     }
   });
 
-  render(cache.all || []);
+  (async () => {
+    setActiveButton(activeFilter);
+    try {
+      await refreshVisibleVideos();
+    }
+    catch (_error) {
+      setError("Unable to load videos for this filter. Try again.");
+    }
+
+  })();
 })();

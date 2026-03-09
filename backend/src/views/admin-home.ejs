@@ -4,53 +4,109 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Home</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/app.css" />
+  <script defer src="/js/auth-wave-background.js"></script>
   <script defer src="/js/logout-confirm.js"></script>
+  <script defer src="/js/admin-home-videos.js"></script>
 </head>
-<body>
-  <main class="page">
-    <section class="panel">
-      <div class="header">
-        <div>
-          <p class="hero-kicker">Admin Studio</p>
-          <h1 class="title-xl">Video Operations Dashboard</h1>
-          <p class="subtitle">Signed in as <strong><%= admin?.email || "Admin" %></strong>. Manage client communication, catalogs, and uploads from one control room.</p>
-        </div>
-        <div class="actions">
-          <form method="POST" action="/admin/logout" data-logout-confirm>
-            <button type="submit" class="btn btn-secondary">Logout</button>
-          </form>
-        </div>
+<body class="admin-home-page">
+  <div class="auth-bg" aria-hidden="true">
+    <canvas class="auth-wave-canvas"></canvas>
+  </div>
+
+  <header class="admin-home-nav-wrap">
+    <nav class="admin-home-nav">
+      <div class="admin-home-brand">
+        <p class="hero-kicker">Admin Studio</p>
+        <h1>Dashboard</h1>
       </div>
 
-      <section class="hero">
-        <p class="hero-kicker">Creative Workflow</p>
-        <h2 class="brand">Built for video editing teams</h2>
-        <p class="subtitle">Fast switching between inquiry management and media operations, optimized for daily production workflows.</p>
-      </section>
-
-      <div class="grid grid-3">
-        <article class="card">
-          <h3>Contacts Queue</h3>
-          <p>Review client requests, feedback, and project leads from your contact pipeline.</p>
-          <div class="card-action"><a class="btn btn-primary" href="/admin/contacts">Open Contacts</a></div>
-        </article>
-
-        <article class="card">
-          <h3>Video Library</h3>
-          <p>Inspect all uploaded clips and filter by category to keep delivery clean.</p>
-          <div class="card-action"><a class="btn btn-primary" href="/admin/videos">Open Videos</a></div>
-        </article>
-
-        <article class="card">
-          <h3>Upload Desk</h3>
-          <p>Publish new primary and secondary videos with complete metadata in seconds.</p>
-          <div class="card-action"><a class="btn btn-primary" href="/admin/video">Upload New Video</a></div>
-        </article>
+      <div class="admin-home-nav-links">
+        <a class="btn btn-ghost" href="/admin/home">Home</a>
+        <a class="btn btn-ghost" href="/admin/videos">Videos</a>
+        <a class="btn btn-ghost" href="/admin/video">Upload</a>
+        <a class="btn btn-ghost" href="/admin/contacts">Contacts</a>
       </div>
+
+      <div class="admin-home-nav-user">
+        <p class="metric">Signed in as <strong><%= admin?.name?.firstName || "Admin" %></strong></p>
+        <form method="POST" action="/admin/logout" data-logout-confirm>
+          <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page admin-home-main">
+    <section class="panel admin-home-panel">
+      <div class="admin-home-heading">
+        <p class="hero-kicker">Video Catalog</p>
+        <h2 class="title-xl">All Uploaded Videos</h2>
+        <p class="subtitle">Every video added in the admin panel appears here for quick review.</p>
+      </div>
+
+      <% if (typeof errors !== "undefined" && errors && errors.length) { %>
+        <div class="alert alert-error">
+          <strong>Unable to load dashboard</strong>
+          <ul>
+            <% errors.forEach((error) => { %>
+              <li><%= error.msg %></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } %>
+
+      <% 
+        const toEmbedLink = (url) => {
+          if (!url) return "";
+          const direct = /^https?:\/\/(?:www\.)?youtube\.com\/embed\//i.test(url);
+          if (direct) return url;
+
+          const watch = url.match(/[?&]v=([^&]+)/i);
+          if (watch && watch[1]) return `https://www.youtube.com/embed/${watch[1]}`;
+
+          const short = url.match(/youtu\.be\/([^?&]+)/i);
+          if (short && short[1]) return `https://www.youtube.com/embed/${short[1]}`;
+
+          return url;
+        };
+      %>
+
+      <% if (!videos || videos.length === 0) { %>
+        <div class="empty admin-home-empty">
+          No videos found yet. Upload your first video from the upload page.
+          <div class="card-action"><a class="btn btn-primary" href="/admin/video">Go To Upload</a></div>
+        </div>
+      <% } else { %>
+        <div id="admin-home-video-grid" class="grid grid-3 admin-home-video-grid">
+          <% videos.forEach((video) => { %>
+            <article class="card admin-home-card">
+              <div class="video-frame">
+                <iframe
+                  src="<%= toEmbedLink(video.link) %>"
+                  title="<%= video.title || 'Video preview' %>"
+                  loading="lazy"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen
+                ></iframe>
+              </div>
+
+              <h3><%= video.title || "Untitled Video" %></h3>
+              <p>Type: <span class="badge <%= video.type === 'PRIMARY' ? 'badge-primary' : 'badge-secondary' %>"><%= video.type || "SECONDARY" %></span></p>
+              <p>Client: <strong><%= video.client || "N/A" %></strong></p>
+              <p class="metric">Added: <%= new Date(video.createdAt).toLocaleDateString() %></p>
+
+              <div class="card-action">
+                <div class="stack">
+                  <button type="button" class="btn btn-secondary" data-action="edit" data-id="<%= video._id %>">Edit</button>
+                  <button type="button" class="btn btn-ghost" data-action="delete" data-id="<%= video._id %>">Delete</button>
+                </div>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+        <script id="initial-home-videos" type="application/json"><%- JSON.stringify(videos || []).replace(/</g, "\\u003c") %></script>
+      <% } %>
     </section>
   </main>
 </body>
